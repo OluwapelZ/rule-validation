@@ -1,8 +1,8 @@
-# Migo Micro Service
+# Base Micro Service boiler plate
 
 ### This micro service is provider specific```
 
-It's a standalone service to point to migo's loans status third party endpoint
+It's a standalone service to to kick start node js gigs
 
 ### Setup
 ```
