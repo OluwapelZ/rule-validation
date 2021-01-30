@@ -1,23 +1,21 @@
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser')
 const morgan = require('morgan');
 const logger = require('./logger');
 require('dotenv').config();
 
-const router = require('./routes/index');
+const router = require('./route/index');
 
 const app = express();
 
-
 app.use(morgan('dev', {stream: logger.stream}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json())
 app.use(cookieParser());
-
 //Bind router-level middleware to app
 app.use('/', router);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
