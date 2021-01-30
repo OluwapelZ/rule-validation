@@ -4,6 +4,7 @@ const RESPONSE_CODES = require('../config/response_codes');
 const ResponseMessage = require('../config/response_messages');
 const CONSTANTS = require('../config/constant');
 const RuleValidationService = require('../service/rule.validation.service');
+const { InvalidFieldNestingLevel, MissingDataFieldError } = require('../errors');
 
 class RuleController {
     fetchPersonnalData(req, res) {
@@ -13,12 +14,18 @@ class RuleController {
 
     validateRule(req, res) {
         try {
-            const completedValidation = new RuleValidationService().validateRule(req.body.rule, req.body.data);
+            const validationResult = new RuleValidationService().validateRule(req.body.rule, req.body.data);
 
-            return (completedValidation.error) ? failed(res, RESPONSE_CODES.bad_request, `field ${req.body.rule.field} failed validation`) :
-            success(res, RESPONSE_CODES.successful, `field ${req.body.rule.field} successfully validated`, {validation: completedValidation});
+            return (validationResult.error) ? success(res, RESPONSE_CODES.bad_request, `field ${req.body.rule.field} failed validation`, { validation: validationResult }) :
+            success(res, RESPONSE_CODES.successful, `field ${req.body.rule.field} successfully validated`, {validation: validationResult});
         } catch (error) {
+            if (error instanceof InvalidFieldNestingLevel)
+                return failed(res, RESPONSE_CODES.bad_request, error.message);
 
+            if (error instanceof MissingDataFieldError)
+                return failed(res, RESPONSE_CODES.bad_request, error.message);
+
+            return failed(res, RESPONSE_CODES.server_error, `Internal Server Error: ${error}`);
         }
     }
 }

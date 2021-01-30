@@ -11,6 +11,14 @@ const CONSTANTS = {
         mobile: "09056351003",
         twitter: "@pelumiiiiiii",
     },
+
+    VALIDATION_CONDITION: {
+        equal: 'eq',
+        not_equal: 'neq',
+        greater: 'gt',
+        greater_or_equal: 'gte',
+        contains: 'contains',
+    },
 }
 
 module.exports = CONSTANTS;
